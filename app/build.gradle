@@ -1,0 +1,39 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.duwaini.mushaf'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.duwaini.mushaf'
+        minSdk 26
+        targetSdk 34
+        versionCode Integer.parseInt(System.getenv('GITHUB_RUN_NUMBER') ?: '1')
+        versionName "1.0." + (System.getenv('GITHUB_RUN_NUMBER') ?: '1')
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('mushaf.keystore')
+            storePassword 'mushaf2026'
+            keyAlias 'mushaf'
+            keyPassword 'mushaf2026'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    sourceSets {
+        main { assets.srcDirs = ['../web'] }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
