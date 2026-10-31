@@ -466,6 +466,14 @@ public class MainActivity extends Activity {
 
         @JavascriptInterface public void setWird(String hhmm) { Alarms.setWird(MainActivity.this, hhmm); }
 
+        @JavascriptInterface public void setDaily(int id, String hhmm, String title, String body, String open) {
+            Alarms.setDaily(MainActivity.this, id, hhmm, title, body, open);
+        }
+
+        @JavascriptInterface public void dailyDone(String open, String date) {
+            Alarms.prefs(MainActivity.this).edit().putString("done_" + open, date).apply();
+        }
+
         @JavascriptInterface public void wirdDone(String date) { Alarms.prefs(MainActivity.this).edit().putString("wirdDone", date).apply(); }
 
         @JavascriptInterface public void askNotify() {

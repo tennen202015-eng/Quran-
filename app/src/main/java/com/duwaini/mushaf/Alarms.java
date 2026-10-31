@@ -99,6 +99,30 @@ public final class Alarms {
         setAlarm(c, cal.getTimeInMillis(), pi);
     }
 
+    /** Daily reminder (e.g. morning / evening adhkar) at HH:MM; an empty time cancels it. */
+    static void setDaily(Context c, int id, String hhmm, String title, String body, String open) {
+        prefs(c).edit().putString("daily_" + id, hhmm + "|" + title + "|" + body + "|" + open).apply();
+        AlarmManager am = c.getSystemService(AlarmManager.class);
+        PendingIntent pi = alarmIntent(c, id, title, body, "daily", open);
+        if (am != null) am.cancel(pi);
+        if (hhmm == null || !hhmm.matches("\\d{1,2}:\\d{2}")) return;
+        String[] t = hhmm.split(":");
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(t[0]));
+        cal.set(Calendar.MINUTE, Integer.parseInt(t[1]));
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        if (cal.getTimeInMillis() <= System.currentTimeMillis() + 1000) cal.add(Calendar.DAY_OF_MONTH, 1);
+        setAlarm(c, cal.getTimeInMillis(), pi);
+    }
+
+    /** Re-arms a daily reminder from what was saved, after it fires or after a restart. */
+    static void restoreDaily(Context c, int id) {
+        String s = prefs(c).getString("daily_" + id, "");
+        String[] p = s.split("\\|", -1);
+        if (p.length == 4) setDaily(c, id, p[0], p[1], p[2], p[3]);
+    }
+
     static String todayKey() {
         Calendar d = Calendar.getInstance();
         return d.get(Calendar.YEAR) + "-" + (d.get(Calendar.MONTH) + 1) + "-" + d.get(Calendar.DAY_OF_MONTH);

@@ -11,5 +11,7 @@ public class BootReceiver extends BroadcastReceiver {
         String sched = Alarms.prefs(c).getString("sched", "[]");
         Alarms.schedule(c, sched);
         Alarms.setWird(c, Alarms.prefs(c).getString("wirdTime", ""));
+        Alarms.restoreDaily(c, 901);
+        Alarms.restoreDaily(c, 902);
     }
 }
